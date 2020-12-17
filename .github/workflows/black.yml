@@ -21,7 +21,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: Lint black
-        uses: tsuyoshicho/action-black@develop
+        uses: rickstaa/action-black@feature/black-suggestion-20201217
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
