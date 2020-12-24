@@ -21,10 +21,10 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: Lint black
-        uses: reviewdog/action-black@v1
+        uses: reviewdog/action-black@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
-          level: warning
+          level: info
           workdir: "./src"
-          fail_on_error: true
+          # fail_on_error: true
