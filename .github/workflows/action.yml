@@ -8,11 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: rickstaa/action-get-semver@v1
-      - name: Print semver
-        id: get_semver
-        with:
-          bump_level: "minor"
-        run: |
-          echo "Current version: ${{ steps.get_semver.outputs.current_version  }}"
-          echo "Next version: ${{ steps.get_semver.outputs.next_version }}"
+      - name: Get Semver
+        uses: rickstaa/action-get-semver@v1.0.1
+
+        # run: |
+        #   echo "Current version: ${{ steps.get_semver.outputs.current_version  }}"
+        #   echo "Next version: ${{ steps.get_semver.outputs.next_version }}"
