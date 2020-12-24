@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+  pull_request:
 jobs:
   check-version:
     runs-on: ubuntu-latest
@@ -10,7 +11,3 @@ jobs:
       - uses: actions/checkout@v2
       - name: Get Semver
         uses: rickstaa/action-get-semver@v1.0.1
-
-        # run: |
-        #   echo "Current version: ${{ steps.get_semver.outputs.current_version  }}"
-        #   echo "Next version: ${{ steps.get_semver.outputs.next_version }}"
