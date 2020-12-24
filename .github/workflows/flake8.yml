@@ -1,5 +1,5 @@
 name: flake8 Lint with reviewdog
-on: [pull_request]
+on: [pull_request, push]
 jobs:
   flake8-lint:
     runs-on: ubuntu-latest
