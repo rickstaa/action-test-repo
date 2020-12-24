@@ -23,4 +23,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
-          fail_on_error: true
+          # level: info
+          fail_on_error: false
