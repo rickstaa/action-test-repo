@@ -27,4 +27,4 @@ jobs:
           reporter: ${{ steps.reporter.outputs.value }}
           level: error
           workdir: "./src"
-          fail_on_error: false
+          fail_on_error: true
