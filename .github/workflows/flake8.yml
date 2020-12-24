@@ -11,9 +11,16 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: "3.8"
+      - name: Select reporter
+        uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
       - name: flake8 Lint
         uses: reviewdog/action-flake8@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
+          reporter: ${{ steps.reporter.outputs.value }}
           filter_mode: diff_context
