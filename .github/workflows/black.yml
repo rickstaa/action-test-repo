@@ -1,7 +1,7 @@
 name: reviewdog
 on: [push, pull_request]
 jobs:
-  black:
+  black-test:
     name: runner / black(exp)
     runs-on: ubuntu-latest
     steps:
@@ -28,3 +28,47 @@ jobs:
           level: error
           workdir: "./src"
           fail_on_error: true
+  black-test-format:
+    name: runner / black(exp)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Select reporter
+        uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - name: Lint black
+        uses: reviewdog/action-black@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: ${{ steps.reporter.outputs.value }}
+          level: error
+          workdir: "./src"
+          fail_on_error: true
+          format: true
+      - name: Commit black formatting results
+        if: failure()
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: ":art: Format Python code with psf/black push"
+      - name: Create Pull Request
+        if: failure()
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Format Python code with psf/black push"
+          commit-message: ":art: Format Python code with psf/black"
+          body: |
+            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
+            uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
+          branch: depup/black
