@@ -21,7 +21,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: Lint black
-        uses: reviewdog/action-black@v1
+        uses: reviewdog/action-black@add_formatting_option
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
@@ -49,7 +49,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: Lint black
-        uses: reviewdog/action-black@v1
+        uses: reviewdog/action-black@add_formatting_option
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
@@ -78,7 +78,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: Lint black
-        uses: reviewdog/action-black@v1
+        uses: reviewdog/action-black@add_formatting_option
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
