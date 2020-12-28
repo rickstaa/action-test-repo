@@ -1,7 +1,7 @@
 name: reviewdog
 on: [push, pull_request]
 jobs:
-  black:
+  black-normal:
     name: runner / black(exp)
     runs-on: ubuntu-latest
     steps:
@@ -27,3 +27,62 @@ jobs:
           reporter: ${{ steps.reporter.outputs.value }}
           level: info
           # workdir: "./src"
+  black-format:
+    name: runner / black(format)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Select reporter
+        uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - name: Lint black
+        uses: reviewdog/action-black@add-auto-format-option
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: ${{ steps.reporter.outputs.value }}
+          level: info
+          format: true
+          # workdir: "./src"
+      - name: Check if formatter worked
+        run: git diff main
+  black-format-no-annotate:
+    name: runner / black(format/no annotate)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Select reporter
+        uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - name: Lint black
+        uses: reviewdog/action-black@add-auto-format-option
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: ${{ steps.reporter.outputs.value }}
+          level: info
+          format: true
+          annotate: false
+          # workdir: "./src"
+      - name: Check if formatter worked
+        run: git diff main
