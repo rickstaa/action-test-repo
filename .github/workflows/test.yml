@@ -27,6 +27,8 @@ jobs:
           reporter: ${{ steps.reporter.outputs.value }}
           level: info
           # workdir: "./src"
+      - name: Check if formatter worked
+        run: git status
   black-format:
     name: runner / black(format)
     runs-on: ubuntu-latest
@@ -55,7 +57,7 @@ jobs:
           format: true
           # workdir: "./src"
       - name: Check if formatter worked
-        run: git diff main
+        run: git status
   black-format-no-annotate:
     name: runner / black(format/no annotate)
     runs-on: ubuntu-latest
@@ -85,4 +87,4 @@ jobs:
           annotate: false
           # workdir: "./src"
       - name: Check if formatter worked
-        run: git diff main
+        run: git status
