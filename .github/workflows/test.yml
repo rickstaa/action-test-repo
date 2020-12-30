@@ -26,7 +26,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: ${{ steps.reporter.outputs.value }}
           level: info
-          # workdir: "./src"
+          black_flags: "-v"
       - name: Check if formatter worked
         run: git status
   black-format:
@@ -55,7 +55,7 @@ jobs:
           reporter: ${{ steps.reporter.outputs.value }}
           level: info
           format: true
-          # workdir: "./src"
+          black_flags: "-v"
       - name: Check if formatter worked
         run: git status
   black-format-no-annotate:
@@ -85,6 +85,6 @@ jobs:
           level: info
           format: true
           annotate: false
-          # workdir: "./src"
+          black_flags: "-v"
       - name: Check if formatter worked
         run: git status
