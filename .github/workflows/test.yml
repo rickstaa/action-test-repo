@@ -29,12 +29,12 @@ jobs:
           black_flags: "-v"
       - name: Check if formatting was successful
         run: |
-          changed_files=$(git status --porcelain --untracked-files=no | wc -l)
-          if [[ ${changed_files} -eq 1 ]]; then
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
             echo "No changes detected!"
-            exit 1
           else
             echo "Changes detected!"
+            exit 1
           fi
   black-format:
     name: runner / black(format)
@@ -65,7 +65,7 @@ jobs:
           black_flags: "-v"
       - name: Check if formatting was successful
         run: |
-          changed_files=$(git status --porcelain --untracked-files=no | wc -l)
+          changed_files=$(git status --porcelain | wc -l)
           if [[ ${changed_files} -eq 0 ]]; then
             echo "No changes detected!"
             exit 1
@@ -102,7 +102,7 @@ jobs:
           black_flags: "-v"
       - name: Check if formatting was successful
         run: |
-          changed_files=$(git status --porcelain --untracked-files=no | wc -l)
+          changed_files=$(git status --porcelain | wc -l)
           if [[ ${changed_files} -eq 0 ]]; then
             echo "No changes detected!"
             exit 1
