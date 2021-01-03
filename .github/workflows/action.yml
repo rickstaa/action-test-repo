@@ -1,0 +1,99 @@
+name: action-test
+on: [push, pull_request]
+jobs:
+  remark-lint-normal:
+    name: runner / remark-lint(exp)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Select reporter
+        uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - name: Lint remark-lint
+        uses: rickstaa/action-remark-lint@add_formatting_option
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: ${{ steps.reporter.outputs.value }}
+          level: info
+          remark_flags: "--ignore-path=./README.md"
+      - name: Check if formatting was successful
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+          else
+            echo "Changes detected!"
+            exit 1
+          fi
+  remark-lint-format:
+    name: runner / remark-lint(format)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Select reporter
+        uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - name: Lint remark-lint
+        uses: rickstaa/action-remark-lint@add_formatting_option
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: ${{ steps.reporter.outputs.value }}
+          level: info
+          format: true
+          remark_flags: "--ignore-path=./README.md"
+      - name: Check if formatting was successful
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+            exit 1
+          else
+            echo "Changes detected!"
+          fi
+  remark-lint-format-no-annotate:
+    name: runner / remark-lint(format/no annotate)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Select reporter
+        uses: haya14busa/action-cond@v1
+        id: reporter
+        with:
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - name: Lint remark-lint
+        uses: rickstaa/action-remark-lint@add_formatting_option
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: ${{ steps.reporter.outputs.value }}
+          level: info
+          format: true
+          annotate: false
+          remark_flags: "--ignore-path=./README.md"
+      - name: Check if formatting was successful
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+            exit 1
+          else
+            echo "Changes detected!"
+          fi
