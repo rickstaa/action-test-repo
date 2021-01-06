@@ -16,7 +16,7 @@ jobs:
       - name: Lint black
         uses: psf/black@stable
         with:
-          args: .
+          args: "-q ."
       - uses: reviewdog/action-suggester@v1
         with:
           tool_name: gofmt
