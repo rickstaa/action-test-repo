@@ -9,7 +9,6 @@ jobs:
       - uses: rickstaa/action-black@main
         with:
           black_args: ". --check"
-          fail_on_error: "false"
 
   black_format:
     name: runner / black (format)
@@ -21,7 +20,6 @@ jobs:
         id: action-black
         with:
           black_args: "."
-          fail_on_error: "false"
 
   black_format_annotate:
     name: runner / black (format annotate)
