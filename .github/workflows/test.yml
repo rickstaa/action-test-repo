@@ -85,11 +85,10 @@ jobs:
             echo "'is_formatted'  output valid."
           fi
       - name: Annotate diff changes using reviewdog
-        if: steps.action-black.outputs.is_formatted == 'true'
+        if: steps.action_black.outputs.is_formatted == 'true'
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: blackfmt
-
 
   black_format_pull_request:
     name: runner / black (format pull request)
@@ -119,7 +118,7 @@ jobs:
             echo "'is_formatted'  output valid."
           fi
       - name: Create Pull Request
-        if: steps.action-black.outputs.is_formatted == 'true'
+        if: steps.black_format.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
