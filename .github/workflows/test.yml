@@ -1,31 +1,44 @@
-name: reviewdog
+name: action-black
 on: [push, pull_request]
 jobs:
-  black-normal:
-    name: runner / black(exp)
+  black_formatter_check:
+    name: runner / black
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: reviewdog/action-black@v1
         with:
-          submodules: true
-      - name: Setup python
-        uses: actions/setup-python@v2
+          black_args: ". --check"
+
+  black_formatter_format:
+    name: runner / black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check files using black formatter
+        uses: rickstaa/action-black@v1
+        id: action-black
         with:
-          python-version: 3.9
-      - name: Lint black
-        uses: psf/black@stable
+          black_args: "."
+
+  black_formatter_format_pull_request:
+    name: runner / black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check files using black formatter
+        uses: rickstaa/action-black@v1
+        id: action-black
         with:
-          args: "-q ."
-      - uses: reviewdog/action-suggester@v1
+          black_args: "."
+      - name: Create Pull Request
+        if: failure() || steps.action-black.outputs.is_formatted == 'true'
+        uses: peter-evans/create-pull-request@v3
         with:
-          tool_name: gofmt
-      - name: Check if formatting was successful
-        run: |
-          changed_files=$(git status --porcelain | wc -l)
-          if [[ ${changed_files} -eq 0 ]]; then
-            echo "No changes detected!"
-          else
-            echo "Changes detected!"
-            exit 1
-          fi
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Format Python code with psf/black push"
+          commit-message: ":art: Format Python code with psf/black"
+          body: |
+            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
+            uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
+          branch: actions/black
