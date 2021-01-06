@@ -85,7 +85,7 @@ jobs:
             echo "'is_formatted'  output valid."
           fi
       - name: Annotate diff changes using reviewdog
-        if: steps.action_black.outputs.is_formatted == 'true'
+        if: steps.black_format.outputs.is_formatted == 'true'
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: blackfmt
