@@ -9,6 +9,7 @@ jobs:
       - uses: rickstaa/action-black@main
         with:
           black_args: ". --check"
+          fail_on_error: "false"
 
   black_formatter_format:
     name: runner / black
@@ -20,6 +21,24 @@ jobs:
         id: action-black
         with:
           black_args: "."
+          fail_on_error: "false"
+
+  black_formatter_format_annotate:
+    name: runner / black
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check files using black formatter
+        uses: rickstaa/action-black@main
+        id: action-black
+        with:
+          black_args: "."
+      - name: Annotate diff changes using reviewdog
+        if: failure() || steps.action-black.outputs.is_formatted == 'true'
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: blackfmt
+
 
   black_formatter_format_pull_request:
     name: runner / black
