@@ -32,7 +32,7 @@ jobs:
         with:
           black_args: "."
       - name: Annotate diff changes using reviewdog
-        if: failure() || steps.action-black.outputs.is_formatted == 'true'
+        if: steps.action-black.outputs.is_formatted == 'true'
         uses: reviewdog/action-suggester@v1
         with:
           tool_name: blackfmt
@@ -49,7 +49,7 @@ jobs:
         with:
           black_args: "."
       - name: Create Pull Request
-        if: failure() || steps.action-black.outputs.is_formatted == 'true'
+        if: steps.action-black.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
