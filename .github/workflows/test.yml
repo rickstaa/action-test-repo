@@ -1,8 +1,8 @@
 name: action-black
 on: [push, pull_request]
 jobs:
-  black_formatter_check:
-    name: runner / black
+  black_check:
+    name: runner / black (check)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -11,8 +11,8 @@ jobs:
           black_args: ". --check"
           fail_on_error: "false"
 
-  black_formatter_format:
-    name: runner / black
+  black_format:
+    name: runner / black (format)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,8 +23,8 @@ jobs:
           black_args: "."
           fail_on_error: "false"
 
-  black_formatter_format_annotate:
-    name: runner / black
+  black_format_annotate:
+    name: runner / black (format annotate)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -40,8 +40,8 @@ jobs:
           tool_name: blackfmt
 
 
-  black_formatter_format_pull_request:
-    name: runner / black
+  black_format_pull_request:
+    name: runner / black (format pull request)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
