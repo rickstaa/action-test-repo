@@ -7,30 +7,83 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: rickstaa/action-black@main
+        id: black_format
         with:
-          black_args: ". --check"
+          fail_on_error: "false"
+      - name: Check if code is left untouched (not formatted)
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+          else
+            echo "Changes detected!"
+            exit 1
+          fi
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.black_format.outputs.is_formatted }}
+          if [[ ${formatted} != "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
 
   black_format:
     name: runner / black (format)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check files using black formatter
-        uses: rickstaa/action-black@main
-        id: action-black
+      - uses: rickstaa/action-black@main
+        id: black_format
         with:
           black_args: "."
+      - name: Check if formatting was successful
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+            exit 1
+          else
+            echo "Changes detected!"
+          fi
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.black_format.outputs.is_formatted }}
+          if [[ ${formatted} == "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
 
   black_format_annotate:
     name: runner / black (format annotate)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check files using black formatter
-        uses: rickstaa/action-black@main
-        id: action-black
+      - uses: rickstaa/action-black@main
+        id: black_format
         with:
           black_args: "."
+      - name: Check if formatting was successful
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+            exit 1
+          else
+            echo "Changes detected!"
+          fi
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.black_format.outputs.is_formatted }}
+          if [[ ${formatted} == "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
       - name: Annotate diff changes using reviewdog
         if: steps.action-black.outputs.is_formatted == 'true'
         uses: reviewdog/action-suggester@v1
@@ -43,11 +96,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check files using black formatter
-        uses: rickstaa/action-black@main
-        id: action-black
+      - uses: rickstaa/action-black@main
+        id: black_format
         with:
           black_args: "."
+      - name: Check if formatting was successful
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+            exit 1
+          else
+            echo "Changes detected!"
+          fi
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.black_format.outputs.is_formatted }}
+          if [[ ${formatted} == "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
       - name: Create Pull Request
         if: steps.action-black.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v3
