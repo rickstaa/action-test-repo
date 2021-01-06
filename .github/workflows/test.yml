@@ -1,43 +1,8 @@
 name: reviewdog
 on: [push, pull_request]
 jobs:
-  # black-normal:
-  #   name: runner / black(exp)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #       with:
-  #         submodules: true
-  #     - name: Setup python
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.9
-  #     - name: Select reporter
-  #       uses: haya14busa/action-cond@v1
-  #       id: reporter
-  #       with:
-  #         cond: ${{ github.event_name == 'pull_request' }}
-  #         if_true: "github-pr-review"
-  #         if_false: "github-check"
-  #     - name: Lint black
-  #       uses: reviewdog/action-black@v1
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         reporter: ${{ steps.reporter.outputs.value }}
-  #         level: info
-  #         black_flags: "-v"
-  #     - name: Check if formatting was successful
-  #       run: |
-  #         changed_files=$(git status --porcelain | wc -l)
-  #         if [[ ${changed_files} -eq 0 ]]; then
-  #           echo "No changes detected!"
-  #         else
-  #           echo "Changes detected!"
-  #           exit 1
-  #         fi
-  black-format:
-    name: runner / black(format)
+  black-normal:
+    name: runner / black(exp)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,64 +13,19 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - name: Select reporter
-        uses: haya14busa/action-cond@v1
-        id: reporter
-        with:
-          cond: ${{ github.event_name == 'pull_request' }}
-          if_true: "github-pr-review"
-          if_false: "github-check"
       - name: Lint black
-        uses: reviewdog/action-black@v1
+        uses: psf/black@stable
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: ${{ steps.reporter.outputs.value }}
-          level: info
-          format: true
-          black_flags: "-v"
+          args: .
+      - uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: gofmt
       - name: Check if formatting was successful
         run: |
           changed_files=$(git status --porcelain | wc -l)
           if [[ ${changed_files} -eq 0 ]]; then
             echo "No changes detected!"
-            exit 1
           else
             echo "Changes detected!"
+            exit 1
           fi
-  # black-format-no-annotate:
-  #   name: runner / black(format/no annotate)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
-  #       with:
-  #         submodules: true
-  #     - name: Setup python
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.9
-  #     - name: Select reporter
-  #       uses: haya14busa/action-cond@v1
-  #       id: reporter
-  #       with:
-  #         cond: ${{ github.event_name == 'pull_request' }}
-  #         if_true: "github-pr-review"
-  #         if_false: "github-check"
-  #     - name: Lint black
-  #       uses: reviewdog/action-black@v1
-  #       with:
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-  #         reporter: ${{ steps.reporter.outputs.value }}
-  #         level: info
-  #         format: true
-  #         annotate: false
-  #         black_flags: "-v"
-  #     - name: Check if formatting was successful
-  #       run: |
-  #         changed_files=$(git status --porcelain | wc -l)
-  #         if [[ ${changed_files} -eq 0 ]]; then
-  #           echo "No changes detected!"
-  #           exit 1
-  #         else
-  #           echo "Changes detected!"
-  #         fi
