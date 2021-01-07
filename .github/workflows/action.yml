@@ -28,6 +28,7 @@ jobs:
           else
             echo "'is_formatted'  output valid."
           fi
+
   remark_lint_format:
     name: runner / remark-lint (format)
     runs-on: ubuntu-latest
@@ -36,7 +37,7 @@ jobs:
       - uses: rickstaa/action-remark-lint@main
         id: remark_lint
         with:
-          remark_args: "."
+          remark_args: ". -o"
       - name: Check if formatting was successful
         run: |
           changed_files=$(git status --porcelain | wc -l)
@@ -55,6 +56,7 @@ jobs:
           else
             echo "'is_formatted'  output valid."
           fi
+
   remark_lint_format_annotate:
     name: runner / remark-lint (format annotate)
     runs-on: ubuntu-latest
@@ -116,7 +118,7 @@ jobs:
             echo "'is_formatted'  output valid."
           fi
       - name: Create Pull Request
-        if: steps.action_remark_lint.outputs.is_formatted == 'true'
+        if: steps.remark_lint.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
