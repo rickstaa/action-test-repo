@@ -1,29 +1,16 @@
-name: action-test
+name: action-remark-lint
 on: [push, pull_request]
 jobs:
-  remark-lint-normal:
-    name: runner / remark-lint(exp)
+  remark_check:
+    name: runner / remark-lint (check)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: rickstaa/action-remark-lint@main
+        id: remark_lint
         with:
-          submodules: true
-      - name: Select reporter
-        uses: haya14busa/action-cond@v1
-        id: reporter
-        with:
-          cond: ${{ github.event_name == 'pull_request' }}
-          if_true: "github-pr-review"
-          if_false: "github-check"
-      - name: Lint remark-lint
-        uses: rickstaa/action-remark-lint@add_formatting_option
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: ${{ steps.reporter.outputs.value }}
-          level: info
-          remark_flags: "--ignore-path=./README.md"
-      - name: Check if formatting was successful
+          fail_on_error: "false"
+      - name: Check if code is left untouched (not formatted)
         run: |
           changed_files=$(git status --porcelain | wc -l)
           if [[ ${changed_files} -eq 0 ]]; then
@@ -32,29 +19,24 @@ jobs:
             echo "Changes detected!"
             exit 1
           fi
-  remark-lint-format:
-    name: runner / remark-lint(format)
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.remark_lint.outputs.is_formatted }}
+          if [[ ${formatted} != "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
+  remark_lint_format:
+    name: runner / remark-lint (format)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: rickstaa/action-remark-lint@main
+        id: remark_lint
         with:
-          submodules: true
-      - name: Select reporter
-        uses: haya14busa/action-cond@v1
-        id: reporter
-        with:
-          cond: ${{ github.event_name == 'pull_request' }}
-          if_true: "github-pr-review"
-          if_false: "github-check"
-      - name: Lint remark-lint
-        uses: rickstaa/action-remark-lint@add_formatting_option
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: ${{ steps.reporter.outputs.value }}
-          level: info
-          format: true
-          remark_flags: "--ignore-path=./README.md"
+          remark_args: "."
       - name: Check if formatting was successful
         run: |
           changed_files=$(git status --porcelain | wc -l)
@@ -64,30 +46,24 @@ jobs:
           else
             echo "Changes detected!"
           fi
-  remark-lint-format-no-annotate:
-    name: runner / remark-lint(format/no annotate)
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.remark_lint.outputs.is_formatted }}
+          if [[ ${formatted} == "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
+  remark_lint_format_annotate:
+    name: runner / remark-lint (format annotate)
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+      - uses: rickstaa/action-remark-lint@main
+        id: remark_lint
         with:
-          submodules: true
-      - name: Select reporter
-        uses: haya14busa/action-cond@v1
-        id: reporter
-        with:
-          cond: ${{ github.event_name == 'pull_request' }}
-          if_true: "github-pr-review"
-          if_false: "github-check"
-      - name: Lint remark-lint
-        uses: rickstaa/action-remark-lint@add_formatting_option
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: ${{ steps.reporter.outputs.value }}
-          level: info
-          format: true
-          annotate: false
-          remark_flags: "--ignore-path=./README.md"
+          remark_args: ". -o"
       - name: Check if formatting was successful
         run: |
           changed_files=$(git status --porcelain | wc -l)
@@ -97,3 +73,58 @@ jobs:
           else
             echo "Changes detected!"
           fi
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.remark_lint.outputs.is_formatted }}
+          if [[ ${formatted} == "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
+      - name: Annotate diff changes using reviewdog
+        if: steps.remark_lint.outputs.is_formatted == 'true'
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: remarkfmt
+
+  remark_lint_format_pull_request:
+    name: runner / remark-lint (format pull request)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: rickstaa/action-remark-lint@main
+        id: remark_lint
+        with:
+          remark_args: ". -o"
+      - name: Check if formatting was successful
+        run: |
+          changed_files=$(git status --porcelain | wc -l)
+          if [[ ${changed_files} -eq 0 ]]; then
+            echo "No changes detected!"
+            exit 1
+          else
+            echo "Changes detected!"
+          fi
+      - name: Check 'is_formatted' output value
+        run: |
+          formatted=${{ steps.remark_lint.outputs.is_formatted }}
+          if [[ ${formatted} == "false" ]]; then
+            echo "'is_formatted'  output invalid!"
+            exit 1
+          else
+            echo "'is_formatted'  output valid."
+          fi
+      - name: Create Pull Request
+        if: steps.action_remark_lint.outputs.is_formatted == 'true'
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Format Python code with remark-lint linter"
+          commit-message: ":art: Format Python code with remark-lint"
+          body: |
+            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
+            uses the [remark-lint](https://github.com/remarkjs/remark-lint) linter to fix these issues.
+          base: ${{ github.head_ref }} # Creates pull request onto pull request or commit branch
+          branch: actions/remark-lint
+  ```
