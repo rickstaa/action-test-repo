@@ -1,5 +1,5 @@
 name: action-black
-on: [push, pull_request]
+on: [push]
 jobs:
   black_check:
     name: runner / black (check)
