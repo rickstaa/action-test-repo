@@ -23,7 +23,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-check
-          level: info
+          level: warning
           workdir: ./testdata/
 
   test-check-fail-on-error:
@@ -44,7 +44,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-check
-          level: info
+          level: warning
           reviewdog_flags: -fail-on-error
           workdir: ./testdata/
 
@@ -112,7 +112,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
-          level: error
+          level: warning
           reviewdog_flags: -filter-mode=file
           workdir: ./testdata/
 
@@ -135,6 +135,6 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
-          level: error
+          level: warning
           reviewdog_flags: -filter-mode=file -fail-on-error
           workdir: ./testdata/
