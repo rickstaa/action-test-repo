@@ -116,25 +116,25 @@ jobs:
           reviewdog_flags: -filter-mode=file
           workdir: ./testdata/
 
-  # test-pr-review:
-  #   if: github.event_name == 'pull_request'
-  #   name: runner / flake8 (github-pr-review-fail-on-error)
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: [3.8]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python ${{ matrix.python-version }} environment
-  #       uses: actions/setup-python@v1
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Python environment report
-  #       run: python -c "import sys; print(sys.version)"
-  #     - uses: rickstaa/action-flake8-composite@main
-  #       with:
-  #         github_token: ${{ secrets.github_token }}
-  #         reporter: github-pr-review
-  #         level: error
-  #         reviewdog_flags: -filter-mode=file -fail-on-error
-  #         workdir: ./testdata/
+  test-pr-review-fail-on-error:
+    if: github.event_name == 'pull_request'
+    name: runner / flake8 (github-pr-review-fail-on-error)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }} environment
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Python environment report
+        run: python -c "import sys; print(sys.version)"
+      - uses: rickstaa/action-flake8-composite@main
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: error
+          reviewdog_flags: -filter-mode=file -fail-on-error
+          workdir: ./testdata/
