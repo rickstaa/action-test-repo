@@ -1,131 +1,19 @@
-name: action-black
+name: reviewdog
 on: [push, pull_request]
 jobs:
-  black_check:
-    name: runner / black (check)
+  linter_name:
+    name: runner / black formatter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: rickstaa/action-black@main
-        id: black_format
+      - uses: haya14busa/action-cond@v1
+        id: reporter
         with:
-          fail_on_error: "false"
-      - name: Check if code is left untouched (not formatted)
-        run: |
-          changed_files=$(git status --porcelain | wc -l)
-          if [[ ${changed_files} -eq 0 ]]; then
-            echo "No changes detected!"
-          else
-            echo "Changes detected!"
-            exit 1
-          fi
-      - name: Check 'is_formatted' output value
-        run: |
-          formatted=${{ steps.black_format.outputs.is_formatted }}
-          if [[ ${formatted} != "false" ]]; then
-            echo "'is_formatted'  output invalid!"
-            exit 1
-          else
-            echo "'is_formatted'  output valid."
-          fi
-
-  black_format:
-    name: runner / black (format)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: rickstaa/action-black@main
-        id: black_format
+          cond: ${{ github.event_name == 'pull_request' }}
+          if_true: "github-pr-review"
+          if_false: "github-check"
+      - uses: reviewdog/action-black@v1
         with:
-          black_args: "."
-      - name: Check if formatting was successful
-        run: |
-          changed_files=$(git status --porcelain | wc -l)
-          if [[ ${changed_files} -eq 0 ]]; then
-            echo "No changes detected!"
-            exit 1
-          else
-            echo "Changes detected!"
-          fi
-      - name: Check 'is_formatted' output value
-        run: |
-          formatted=${{ steps.black_format.outputs.is_formatted }}
-          if [[ ${formatted} == "false" ]]; then
-            echo "'is_formatted'  output invalid!"
-            exit 1
-          else
-            echo "'is_formatted'  output valid."
-          fi
-
-  black_format_annotate:
-    name: runner / black (format annotate)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: rickstaa/action-black@main
-        id: black_format
-        with:
-          black_args: "."
-      - name: Check if formatting was successful
-        run: |
-          changed_files=$(git status --porcelain | wc -l)
-          if [[ ${changed_files} -eq 0 ]]; then
-            echo "No changes detected!"
-            exit 1
-          else
-            echo "Changes detected!"
-          fi
-      - name: Check 'is_formatted' output value
-        run: |
-          formatted=${{ steps.black_format.outputs.is_formatted }}
-          if [[ ${formatted} == "false" ]]; then
-            echo "'is_formatted'  output invalid!"
-            exit 1
-          else
-            echo "'is_formatted'  output valid."
-          fi
-      - name: Annotate diff changes using reviewdog
-        if: steps.black_format.outputs.is_formatted == 'true'
-        uses: reviewdog/action-suggester@v1
-        with:
-          tool_name: blackfmt
-
-  black_format_pull_request:
-    name: runner / black (format pull request)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: rickstaa/action-black@main
-        id: black_format
-        with:
-          black_args: "."
-      - name: Check if formatting was successful
-        run: |
-          changed_files=$(git status --porcelain | wc -l)
-          if [[ ${changed_files} -eq 0 ]]; then
-            echo "No changes detected!"
-            exit 1
-          else
-            echo "Changes detected!"
-          fi
-      - name: Check 'is_formatted' output value
-        run: |
-          formatted=${{ steps.black_format.outputs.is_formatted }}
-          if [[ ${formatted} == "false" ]]; then
-            echo "'is_formatted'  output invalid!"
-            exit 1
-          else
-            echo "'is_formatted'  output valid."
-          fi
-      - name: Create Pull Request
-        if: steps.black_format.outputs.is_formatted == 'true'
-        uses: peter-evans/create-pull-request@v3
-        with:
-          base: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Format Python code with psf/black push"
-          commit-message: ":art: Format Python code with psf/black"
-          body: |
-            There appear to be some python formatting errors in ${{ github.sha }}. This pull request
-            uses the [psf/black](https://github.com/psf/black) formatter to fix these issues.
-          branch: actions/black
+          github_token: ${{ secrets.github_token }}
+          reporter: ${{ steps.reporter.outputs.value }}
+          level: warning
