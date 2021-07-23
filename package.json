@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "remark-lint-emphasis-marker": "^2.0.1",
-    "remark-lint-strong-marker": "^2.0.1",
+    "remark-lint-strong-marker": "^2.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

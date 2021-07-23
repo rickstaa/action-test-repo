@@ -13,7 +13,7 @@ jobs:
           if_true: "github-pr-review"
           if_false: "github-check"
       - name: remark-lint
-        uses: reviewdog/action-remark-lint@v2
+        uses: reviewdog/action-remark-lint@fix_plugins_not_installed_bug
         with:
           github_token: ${{ secrets.github_token }}
           reporter: ${{ steps.reporter.outputs.value }}
