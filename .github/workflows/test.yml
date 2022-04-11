@@ -28,6 +28,9 @@ jobs:
         run: |
           is_formatted=$(git status --porcelain | wc -l)
           echo "::set-output name=is_formatted::${is_formatted}"
+      - name: Check if formatted
+        run: |
+          echo ${{needs.action_black.outputs.is_formatted}}
       - name: Create Pull Request
         if: steps.action_black.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v3
