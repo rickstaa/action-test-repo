@@ -2,3 +2,4 @@
 .vscode/
 
 # Files to ignore
+*.code-workspace
