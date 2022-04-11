@@ -33,7 +33,7 @@ jobs:
           fi
       - name: Check if formatted
         run: |
-          echo ${{needs.action_black.outputs.is_formatted}}
+          echo ${{steps.action_black.outputs.is_formatted}}
       - name: Create Pull Request
         if: steps.action_black.outputs.is_formatted == 'true'
         uses: peter-evans/create-pull-request@v3
