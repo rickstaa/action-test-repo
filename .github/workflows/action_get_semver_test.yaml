@@ -1,0 +1,22 @@
+name: test rickstaa/action-get-semver
+on:
+  push:
+    branches:
+      - main
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: rickstaa/action-get-semver@upstream_security_bug_workarround
+        id: get_semver
+        with:
+          bump_level: "patch"
+          verbose: true
+          frail: true
+      - name: Print current and next version
+        run: |
+          echo "Current version: ${{ steps.get_semver.outputs.current_version  }}"
+          echo "Next version: ${{ steps.get_semver.outputs.next_version }}"
