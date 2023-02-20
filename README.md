@@ -1,3 +1,1 @@
-# action-test-repo
-
-Repository to test my github actions.
+Failure is when you stop trying to do something.
