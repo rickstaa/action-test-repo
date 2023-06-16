@@ -18,3 +18,4 @@ jobs:
           reporter: ${{ steps.reporter.outputs.value }}
           level: warning
           verbose: true
+          workdir: testdata/emptyfolder
