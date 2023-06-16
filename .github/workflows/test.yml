@@ -12,8 +12,17 @@ jobs:
           cond: ${{ github.event_name == 'pull_request' }}
           if_true: "github-pr-review"
           if_false: "github-check"
-      - uses: reviewdog/action-black@pr44
+      - uses: reviewdog/action-black@fix_no_python_files_error
         with:
           github_token: ${{ secrets.github_token }}
           reporter: ${{ steps.reporter.outputs.value }}
           level: warning
+          verbose: true
+      - name: Check empty folder env variable
+        run: |
+          if [[ ${{ env.EMPTY_FOLDER }} ]]; then
+            echo "Folder was classified as empty!"
+            exit 1
+          else
+            echo "Folder was not classified as empty!"
+          fi
