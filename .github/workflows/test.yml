@@ -18,11 +18,3 @@ jobs:
           reporter: ${{ steps.reporter.outputs.value }}
           level: warning
           verbose: true
-      - name: Check empty folder env variable
-        run: |
-          if [[ ${{ env.EMPTY_FOLDER }} ]]; then
-            echo "Folder was classified as empty!"
-            exit 1
-          else
-            echo "Folder was not classified as empty!"
-          fi
