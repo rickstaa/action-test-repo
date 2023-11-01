@@ -25,7 +25,7 @@ jobs:
         id: "tag_create"
         with:
           tag: "v${{ steps.version.outputs.tag }}"
-          tag_exists_error: false
+          tag_exists_error: true
           message: "Latest release"
 
       - run: |
