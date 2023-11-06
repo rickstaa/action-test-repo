@@ -10,12 +10,14 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: rickstaa/action-get-semver@upstream_security_bug_workarround
+      - uses: rickstaa/action-get-semver@add_tag_signing
         id: get_semver
         with:
           bump_level: "patch"
           verbose: true
           frail: true
+          input_gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          input_gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
       - name: Print current and next version
         run: |
           echo "Current version: ${{ steps.get_semver.outputs.current_version  }}"
