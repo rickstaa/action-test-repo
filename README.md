@@ -1,5 +1,3 @@
 # action-test-repo
 
-Repository to test my github actions..
-test.sdd
-test
+Repository to test my github actions.
