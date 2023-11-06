@@ -13,4 +13,3 @@ jobs:
       - uses: rickstaa/action-update-semver@add_tag_signing
         with:
           gpg_private_key: "${{ secrets.GPG_PRIVATE_KEY }}"
-          gpg_passphrase: "${{ secrets.GPG_PASSPHRASE }}"
