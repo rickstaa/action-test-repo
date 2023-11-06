@@ -1,0 +1,17 @@
+name: Update Semver
+on:
+  push:
+    branches-ignore:
+      - '**'
+    tags:
+      - 'v*.*.*'
+jobs:
+  update-semver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: rickstaa/action-update-semver@add_tag_signing
+        with:
+          major_version_tag_only: true  # (optional, default is "false")
+          input_gpg_private_key: "${{ secrets.GPG_PRIVATE_KEY }}"
+          input_gpg_passphrase: "${{ secrets.GPG_PASSPHRASE }}"
