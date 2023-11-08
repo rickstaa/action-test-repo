@@ -80,6 +80,7 @@ jobs:
           message: "Test tag GPG signing"
           tag_exists_error: false
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Test tag exists error
         uses: rickstaa/action-create-tag@add_tag_exists_conditions
