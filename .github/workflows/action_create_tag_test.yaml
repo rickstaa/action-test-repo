@@ -73,6 +73,14 @@ jobs:
         run: |
           echo "Tag already present: ${{ steps.tag_create2.outputs.tag_exists }}"
 
+      - name: Test tag GPG signing.
+        uses: rickstaa/action-create-tag@add_tag_signing
+        with:
+          tag: "tag_gpg"
+          message: "Test tag GPG signing"
+          tag_exists_error: false
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+
       - name: Test tag exists error
         uses: rickstaa/action-create-tag@add_tag_exists_conditions
         with:
