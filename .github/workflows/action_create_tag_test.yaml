@@ -41,37 +41,37 @@ jobs:
           no_verify_tag: true
           tag_exists_error: false
 
-      # - name: Test tag exists
-      #   uses: rickstaa/action-create-tag@main
-      #   id: tag_create
-      #   with:
-      #     tag: "tag_exists"
-      #     message: "Test tag exists"
-      #     tag_exists_error: false
-      # # Print result using the ensv variable.
-      # - name: Print tag exists result using the env variable.
-      #   run: |
-      #     echo "Tag already present: ${{ env.TAG_EXISTS }}"
-      # # Print result using the action output.
-      # - name: Print tag exists result using the action output.
-      #   run: |
-      #     echo "Tag already present: ${{ steps.tag_create.outputs.tag_exists }}"
+      - name: Test tag exists
+        uses: rickstaa/action-create-tag@add_tag_signing
+        id: tag_create
+        with:
+          tag: "tag_exists"
+          message: "Test tag exists"
+          tag_exists_error: false
+      # Print result using the ensv variable.
+      - name: Print tag exists result using the env variable.
+        run: |
+          echo "Tag already present: ${{ env.TAG_EXISTS }}"
+      # Print result using the action output.
+      - name: Print tag exists result using the action output.
+        run: |
+          echo "Tag already present: ${{ steps.tag_create.outputs.tag_exists }}"
 
-      # - name: Test tag exists no error
-      #   uses: rickstaa/action-create-tag@main
-      #   id: tag_create2
-      #   with:
-      #     tag: "tag_exists_not"
-      #     message: "Test tag exists"
-      #     tag_exists_error: false
-      # # Print result using the env variable.
-      # - name: Print tag exists no error result using the env variable.
-      #   run: |
-      #     echo "Tag already present: ${{ env.TAG_EXISTS }}"
-      # # Print result using the action output.
-      # - name: Print tag exists no error result using the action output.
-      #   run: |
-      #     echo "Tag already present: ${{ steps.tag_create2.outputs.tag_exists }}"
+      - name: Test tag exists no error
+        uses: rickstaa/action-create-tag@add_tag_signing
+        id: tag_create2
+        with:
+          tag: "tag_exists_not"
+          message: "Test tag exists"
+          tag_exists_error: false
+      # Print result using the env variable.
+      - name: Print tag exists no error result using the env variable.
+        run: |
+          echo "Tag already present: ${{ env.TAG_EXISTS }}"
+      # Print result using the action output.
+      - name: Print tag exists no error result using the action output.
+        run: |
+          echo "Tag already present: ${{ steps.tag_create2.outputs.tag_exists }}"
 
       - name: Test tag GPG signing.
         uses: rickstaa/action-create-tag@add_tag_signing
@@ -81,8 +81,8 @@ jobs:
           tag_exists_error: false
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
 
-      # - name: Test tag exists error
-      #   uses: rickstaa/action-create-tag@add_tag_exists_conditions
-      #   with:
-      #     tag: "tag_exists"
-      #     message: "Test tag exists crash"
+      - name: Test tag exists error
+        uses: rickstaa/action-create-tag@add_tag_exists_conditions
+        with:
+          tag: "tag_exists"
+          message: "Test tag exists crash"
