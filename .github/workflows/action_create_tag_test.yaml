@@ -13,33 +13,33 @@ jobs:
         with:
           fetch-depth: 0
 
-      # - name: Print GitHub context
-      #   run: |
-      #     echo "GitHub context: ${{ toJson(github) }}"
+      - name: Print GitHub context
+        run: |
+          echo "GitHub context: ${{ toJson(github) }}"
 
-      # - name: Print GITHUB_SHA
-      #   run: |
-      #     echo "GITHUB_SHA: ${{ github.sha }}"
+      - name: Print GITHUB_SHA
+        run: |
+          echo "GITHUB_SHA: ${{ github.sha }}"
 
-      # - name: Test tag regular
-      #   uses: rickstaa/action-create-tag@main
-      #   with:
-      #     tag: "tag_regular"
-      #     message: "Test tag regular"
-      #     tag_exists_error: false
-      # - name: Test tag force
-      #   uses: rickstaa/action-create-tag@main
-      #   with:
-      #     tag: "tag_force"
-      #     message: "Test tag force"
-      #     force_push_tag: true
-      # - name: Test tag no verify
-      #   uses: rickstaa/action-create-tag@main
-      #   with:
-      #     tag: "tag_no_verify"
-      #     message: "Test tag no verify"
-      #     no_verify_tag: true
-      #     tag_exists_error: false
+      - name: Test tag regular
+        uses: rickstaa/action-create-tag@main
+        with:
+          tag: "tag_regular"
+          message: "Test tag regular"
+          tag_exists_error: false
+      - name: Test tag force
+        uses: rickstaa/action-create-tag@main
+        with:
+          tag: "tag_force"
+          message: "Test tag force"
+          force_push_tag: true
+      - name: Test tag no verify
+        uses: rickstaa/action-create-tag@main
+        with:
+          tag: "tag_no_verify"
+          message: "Test tag no verify"
+          no_verify_tag: true
+          tag_exists_error: false
 
       # - name: Test tag exists
       #   uses: rickstaa/action-create-tag@main
@@ -48,7 +48,7 @@ jobs:
       #     tag: "tag_exists"
       #     message: "Test tag exists"
       #     tag_exists_error: false
-      # # Print result using the env variable.
+      # # Print result using the ensv variable.
       # - name: Print tag exists result using the env variable.
       #   run: |
       #     echo "Tag already present: ${{ env.TAG_EXISTS }}"
