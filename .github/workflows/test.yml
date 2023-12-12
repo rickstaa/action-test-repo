@@ -5,14 +5,14 @@ jobs:
     name: runner / black formatter
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: haya14busa/action-cond@v1
         id: reporter
         with:
           cond: ${{ github.event_name == 'pull_request' }}
           if_true: "github-pr-review"
           if_false: "github-check"
-      - uses: rickstaa/action-black@v1
+      - uses: rickstaa/action-black@hotfix_18
         with:
           black_args: ". --check"
           fail_on_error: false
